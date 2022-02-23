@@ -4,6 +4,8 @@ using System.IO;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using Newtonsoft.Json;
+using System.Net;
+
 namespace PresenceSharpUI
 {
     /// <summary>
@@ -17,13 +19,14 @@ namespace PresenceSharpUI
             if (!File.Exists("./clientpreferences.json"))
             {
                 InitializeComponent();
+                WebClient webclient = new WebClient();
+                webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), "clientpreferences.json");
                 MessageBox.Show("JSON not found, downloading example...");
             }
             if (File.Exists("./clientpreferences.json"))
             {
                 string DATA = File.ReadAllText("./clientpreferences.json");
                 LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
-                InitializeComponent();
                 int charam = ClientID.Text.Length;
                 if (charam != 18)
                 {
@@ -71,21 +74,13 @@ namespace PresenceSharpUI
                 else
                 {
                     File.WriteAllText(@"clientpreferences.json", "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagetext\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
-                    client.SetPresence(new RichPresence()
-                    {
-                        Details = json.title,
-                        State = json.subtitle,
-                        Assets = new Assets()
-                        {
-                            LargeImageKey = json.largeimagename,
-                            LargeImageText = json.largeimagetext,
-                            SmallImageKey = json.smallimagename,
-                            SmallImageText = json.smallimagetext
-                        }
-                    });
-                    MessageBox.Show("RPC Initialized!");
+                    RefreshRPC();
                 }
             }
+        }
+        private void Minimize (object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
         }
         public static DiscordRpcClient client;
         private bool cidtrue;
@@ -127,6 +122,25 @@ namespace PresenceSharpUI
             }
 
         }
+        private static void RefreshRPC()
+        {
+            string DATA = File.ReadAllText("./clientpreferences.json");
+            LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
+            client.SetPresence(new RichPresence()
+            {
+                Details = json.title,
+                State = json.subtitle,
+                Assets = new Assets()
+                {
+                    LargeImageKey = json.largeimagename,
+                    LargeImageText = json.largeimagetext,
+                    SmallImageKey = json.smallimagename,
+                    SmallImageText = json.smallimagetext
+                }
+            });
+            MessageBox.Show("RPC updated!", "", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         public class LauncherCloud
         {
             public string title { get; set; }
