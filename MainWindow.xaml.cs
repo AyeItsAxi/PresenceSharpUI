@@ -18,7 +18,6 @@ namespace PresenceSharpUI
         {
             InitializeComponent();
             string root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI";
-            MessageBox.Show(clientpref);
             if (!Directory.Exists(root))
             {
                 Directory.CreateDirectory(root);

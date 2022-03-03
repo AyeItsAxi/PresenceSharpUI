@@ -4,7 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>pss.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="pss.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
