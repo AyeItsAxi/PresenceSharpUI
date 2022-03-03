@@ -25,9 +25,16 @@ namespace PresenceSharpUI
             if (!File.Exists(clientpref))
             {
                 InitializeComponent();
-                WebClient webclient = new WebClient();
-                webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), clientpref);
-                MessageBox.Show("JSON not found, downloading example file...");
+                try
+                {
+                    WebClient webclient = new WebClient();
+                    webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), clientpref);
+                    MessageBox.Show("JSON not found, downloading example file...");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("A fatal error occurred (make sure you are connected to the internet: " + ex.Message);
+                }
             }
             if (File.Exists(clientpref))
             {
