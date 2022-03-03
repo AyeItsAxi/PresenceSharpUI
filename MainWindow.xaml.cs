@@ -13,26 +13,33 @@ namespace PresenceSharpUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
         public MainWindow()
         {
             InitializeComponent();
-            if (!File.Exists("./clientpreferences.json"))
+            string root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI";
+            MessageBox.Show(clientpref);
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
+            if (!File.Exists(clientpref))
             {
                 InitializeComponent();
                 WebClient webclient = new WebClient();
-                webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), "clientpreferences.json");
-                MessageBox.Show("JSON not found, downloading example...");
+                webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), clientpref);
+                MessageBox.Show("JSON not found, downloading example file...");
             }
-            if (File.Exists("./clientpreferences.json"))
+            if (File.Exists(clientpref))
             {
-                string DATA = File.ReadAllText("./clientpreferences.json");
+                string DATA = File.ReadAllText(clientpref);
                 LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
                 int charam = ClientID.Text.Length;
                 if (charam != 18)
                 {
                     cidtrue = false;
                 }
-                if (cidtrue = true & File.Exists("./clientpreferences.json"))
+                if (cidtrue = true & File.Exists(clientpref))
                 {
                     Initialize();
                     ClientID.Text = json.cid;
@@ -43,37 +50,35 @@ namespace PresenceSharpUI
                     SIN.Text = json.smallimagename;
                     SIT.Text = json.smallimagetext;
                 }
-                if (!File.Exists("./clientpreferences.json"))
-                {
-                    MessageBox.Show("JSON not found, downloading example file...");
-                }
             }
         }
         //its time to start writing button logic :tiredpepe:
         private void Save(object sender, RoutedEventArgs e)
         {
+            string DATA = File.ReadAllText(clientpref);
+            LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
             int charam = ClientID.Text.Length;
             if (charam != 18)
             {
                 MessageBox.Show("Not a valid client ID!");
+                ClientID.Text = json.cid;
                 cidtrue = false;
             }
             if (cidtrue == false)
             {
                 
             }
-            if (cidtrue == true)
+            bool charamtrue = charam == 18;
+            if (cidtrue == true && charamtrue)
             {
-                string DATA = File.ReadAllText("./clientpreferences.json");
-                LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
                 //this is a literal living hell to look at
-                if (!File.Exists("clientpreferences.json"))
+                if (!File.Exists(clientpref))
                 {
-                    File.WriteAllText(@"clientpreferences.json", "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
+                    File.WriteAllText(clientpref, "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
                 }
                 else
                 {
-                    File.WriteAllText(@"clientpreferences.json", "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagetext\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
+                    File.WriteAllText(clientpref, "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagetext\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
                     RefreshRPC();
                 }
             }
@@ -87,9 +92,10 @@ namespace PresenceSharpUI
 
         private static void Initialize()
         {
+            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
             try
             {
-                string DATA = File.ReadAllText("./clientpreferences.json");
+                string DATA = File.ReadAllText(clientpref);
                 LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
                 client = new DiscordRpcClient(json.cid);
                 client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
@@ -124,7 +130,8 @@ namespace PresenceSharpUI
         }
         private static void RefreshRPC()
         {
-            string DATA = File.ReadAllText("./clientpreferences.json");
+            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
+            string DATA = File.ReadAllText(clientpref);
             LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
             client.SetPresence(new RichPresence()
             {
