@@ -1,27 +1,29 @@
 ﻿using System;
-using System.Windows;
 using System.IO;
-using DiscordRPC;
-using DiscordRPC.Logging;
-using Newtonsoft.Json;
 using System.Net;
+using DiscordRPC;
+using System.Windows;
+using Newtonsoft.Json;
+using DiscordRPC.Logging;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace PresenceSharpUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
+        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\clientpreferences.json";
         public MainWindow()
         {
             InitializeComponent();
             bHasTimer = false;
-            string root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI";
+            string root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI";
             if (!Directory.Exists(root))
             {
                 Directory.CreateDirectory(root);
+            }
+            if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI"))
+            {
+                Directory.Delete(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI", true);
             }
             if (!File.Exists(clientpref))
             {
@@ -34,7 +36,7 @@ namespace PresenceSharpUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("A fatal error occurred (make sure you are connected to the internet: " + ex.Message);
+                    MessageBox.Show("A fatal error occurred (make sure you are connected to the internet): " + ex.Message);
                 }
             }
             if (File.Exists(clientpref))
@@ -59,7 +61,6 @@ namespace PresenceSharpUI
                 }
             }
         }
-        //its time to start writing button logic :tiredpepe:
         private void Save(object sender, RoutedEventArgs e)
         {
             string DATA = File.ReadAllText(clientpref);
@@ -99,7 +100,7 @@ namespace PresenceSharpUI
 
         private static void Initialize()
         {
-            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
+            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\clientpreferences.json";
             try
             {
                 string DATA = File.ReadAllText(clientpref);
@@ -127,7 +128,13 @@ namespace PresenceSharpUI
                         SmallImageText = json.smallimagetext
                     }
                 });
-                MessageBox.Show("RPC Initialized!");
+                new ToastContentBuilder()
+                    .AddArgument("action", "viewConversation")
+                    .AddArgument("conversationId", 9813)
+                    .AddText("Rich presence initialized!")
+                    .AddText("Note: If you don't see your rich presence, you may be getting rate limited by Discord. Give it a few minutes and try again.")
+                    .SetToastDuration(ToastDuration.Long)
+                    .Show();
             }
             catch (Exception ex)
             {
@@ -165,7 +172,7 @@ namespace PresenceSharpUI
             public string smallimagename { get; set; }
             public string smallimagetext { get; set; }
         }
-
+        //making sure timers dont fuck up was much easier than i thought it would have been ,,
         public bool bHasTimer;
 
         private void ClientCallUpdateStartTime(object sender, RoutedEventArgs e)
