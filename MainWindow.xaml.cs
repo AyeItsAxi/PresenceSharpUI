@@ -17,6 +17,7 @@ namespace PresenceSharpUI
         public MainWindow()
         {
             InitializeComponent();
+            bHasTimer = false;
             string root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI";
             if (!Directory.Exists(root))
             {
@@ -163,6 +164,22 @@ namespace PresenceSharpUI
             public string largeimagetext { get; set; }
             public string smallimagename { get; set; }
             public string smallimagetext { get; set; }
+        }
+
+        public bool bHasTimer;
+
+        private void ClientCallUpdateStartTime(object sender, RoutedEventArgs e)
+        {
+            if (bHasTimer == true)
+            {
+                client.UpdateClearTime();
+                bHasTimer = false;
+            }
+            else if (bHasTimer == false)
+            {
+                client.UpdateStartTime();
+                bHasTimer = true;
+            }
         }
     }
 }

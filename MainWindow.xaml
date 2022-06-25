@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Presence# UI" Height="302" Width="400" ResizeMode="NoResize">
     <Grid Background="#FF131313" Margin="0,0,0,-6">
-        <TextBox Name="ClientID" HorizontalAlignment="Left" Margin="46,64,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="291" FontSize="11" Height="18" TextAlignment="Center"/>
-        <TextBlock HorizontalAlignment="Left" Margin="170,48,0,0" TextWrapping="Wrap" Text="Client ID" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Text Light"/>
+        <TextBox Name="ClientID" HorizontalAlignment="Left" Margin="46,64,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" FontSize="11" Height="18" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Margin="85,48,0,0" TextWrapping="Wrap" Text="Client ID" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Text Light"/>
         <TextBox Name="Title" HorizontalAlignment="Left" Margin="46,104,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <TextBlock HorizontalAlignment="Left" Margin="96,88,0,0" TextWrapping="Wrap" Text="Title" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Text Light"/>
         <TextBox Name="Subtitle" HorizontalAlignment="Left" Margin="217,104,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
@@ -108,5 +108,7 @@
                 </Style>
             </Button.Style>
         </Button>
+        <CheckBox Content=" " Margin="0,66,66,0" Click="ClientCallUpdateStartTime" Foreground="White" FontFamily="Segoe UI Variable Text Light" Opacity="69420" Visibility="Visible" HorizontalAlignment="Right" Width="15" Height="15" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="217,64,0,0" TextWrapping="Wrap" Text="Include a timer:" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Text Light" Height="19" Width="102"/>
     </Grid>
 </Window>

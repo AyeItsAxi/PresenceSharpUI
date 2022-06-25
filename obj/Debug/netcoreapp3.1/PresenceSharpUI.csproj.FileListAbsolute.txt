@@ -22,3 +22,27 @@ C:\Users\shawn\Documents\vsProjects\PresenceSharpUI\PresenceSharpUI\bin\Debug\ne
 C:\Users\shawn\Documents\vsProjects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\shawn\Documents\vsProjects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.csproj.CopyComplete
 C:\Users\shawn\Documents\vsProjects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI_Content.g.cs
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.exe
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.deps.json
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.runtimeconfig.json
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.runtimeconfig.dev.json
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.dll
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\PresenceSharpUI.pdb
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\DiscordRPC.dll
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.csproj.AssemblyReference.cache
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\MainWindow.g.cs
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\App.g.cs
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI_Content.g.cs
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI_MarkupCompile.cache
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI_MarkupCompile.lref
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\MainWindow.baml
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.g.resources
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.AssemblyInfoInputs.cache
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.AssemblyInfo.cs
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.csproj.CoreCompileInputs.cache
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.csproj.CopyComplete
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.dll
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.pdb
+C:\Users\shawn\OneDrive\Documents\Visual Studio Projects\PresenceSharpUI\PresenceSharpUI\obj\Debug\netcoreapp3.1\PresenceSharpUI.genruntimeconfig.cache
