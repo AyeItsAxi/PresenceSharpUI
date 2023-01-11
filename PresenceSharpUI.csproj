@@ -2,19 +2,40 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>pss.ico</ApplicationIcon>
+    <ApplicationIcon>Lib\Images\AppIcon.ico</ApplicationIcon>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="pss.ico" />
+    <None Remove="AppIcon.Flat.jpg" />
+    <None Remove="Lib\Fonts\Extrabold\GgSansExtrabold.ttf" />
+    <None Remove="Lib\Fonts\Normal\GgSansNormal.ttf" />
+    <None Remove="Lib\Fonts\Semibold\GgSansSemibold.ttf" />
+    <None Remove="Lib\Images\AppIcon.32px.jpg" />
+    <None Remove="Lib\Images\AppIcon.png" />
+    <None Remove="RefreshButton.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <Content Include="Lib\Images\AppIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Lib\Images\AppIcon.32px.jpg" />
+    <Resource Include="Lib\Images\AppIcon.Flat.jpg" />
+    <Resource Include="Lib\Fonts\Extrabold\GgSansExtrabold.ttf" />
+    <Resource Include="Lib\Fonts\Normal\GgSansNormal.ttf" />
+    <Resource Include="Lib\Fonts\Semibold\GgSansSemibold.ttf" />
+    <Resource Include="Lib\Images\AppIcon.png" />
+    <Resource Include="Lib\Images\RefreshButton.png" />
   </ItemGroup>
 
 </Project>

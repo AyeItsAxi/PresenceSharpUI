@@ -6,107 +6,110 @@ using System.Windows;
 using Newtonsoft.Json;
 using DiscordRPC.Logging;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Windows.Media;
+using System.Windows.Input;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
+using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
+using Application = System.Windows.Application;
+using DiscordRPC.Events;
+using System.Threading.Tasks;
 
 namespace PresenceSharpUI
 {
     public partial class MainWindow : Window
     {
-        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\clientpreferences.json";
+        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\UserPreferences.json";
         public MainWindow()
         {
             InitializeComponent();
-            bHasTimer = false;
             string root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI";
             if (!Directory.Exists(root))
             {
                 Directory.CreateDirectory(root);
             }
-            if (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI"))
-            {
-                Directory.Delete(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI", true);
-            }
             if (!File.Exists(clientpref))
             {
-                InitializeComponent();
-                try
+                PSUIUserData UDDefault = new()
                 {
-                    WebClient webclient = new WebClient();
-                    webclient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/AyeItsAxi/PresenceSharpUI/main/reqfiles/clientpreferences.json"), clientpref);
-                    MessageBox.Show("JSON not found, downloading example file...");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("A fatal error occurred (make sure you are connected to the internet): " + ex.Message);
-                }
+                    I64ApplicationID = 1061800604051189830,
+                    StrTitle = "This is an example title",
+                    StrSubtitle = "This is an example subtitle",
+                    StrLargeImageName = "appicon",
+                    StrLargeImageText = "Example text",
+                    StrSmallImageName = "appicon",
+                    StrSmallImageText = "Example text",
+                    BUseTimer = false
+                };
+                File.WriteAllText(clientpref, JsonConvert.SerializeObject(UDDefault));
             }
             if (File.Exists(clientpref))
             {
-                string DATA = File.ReadAllText(clientpref);
-                LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
-                int charam = ClientID.Text.Length;
-                if (charam != 18)
+                DeserializeApplicationPreferences();
+            }
+            Initialize();
+            EnsurePresenceConnection();
+        }
+        private async void EnsurePresenceConnection()
+        {
+            await Task.Delay(20000);
+            for (int i = 0; i < 50; i++)
+            {
+                if (BPresenceConnected == true)
                 {
-                    cidtrue = false;
+                    break;
                 }
-                if (cidtrue = true & File.Exists(clientpref))
+                if (BPresenceConnected == false)
                 {
                     Initialize();
-                    ClientID.Text = json.cid;
-                    Title.Text = json.title;
-                    Subtitle.Text = json.subtitle;
-                    LIN.Text = json.largeimagename;
-                    LIT.Text = json.largeimagetext;
-                    SIN.Text = json.smallimagename;
-                    SIT.Text = json.smallimagetext;
+                    await Task.Delay(30000);
                 }
             }
         }
-        private void Save(object sender, RoutedEventArgs e)
+        private void SerializeApplicationPreferences()
         {
-            string DATA = File.ReadAllText(clientpref);
-            LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
-            int charam = ClientID.Text.Length;
-            if (charam != 18)
+            PSUIUserData UD = new()
             {
-                MessageBox.Show("Not a valid client ID!");
-                ClientID.Text = json.cid;
-                cidtrue = false;
-            }
-            if (cidtrue == false)
-            {
-                
-            }
-            bool charamtrue = charam == 18;
-            if (cidtrue == true && charamtrue)
-            {
-                //this is a literal living hell to look at
-                if (!File.Exists(clientpref))
-                {
-                    File.WriteAllText(clientpref, "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
-                }
-                else
-                {
-                    File.WriteAllText(clientpref, "{" + " " + "\"" + "cid\":" + "\"" + ClientID.Text + "\"" + "," + "\"" + "title\":" + "\"" + Title.Text + "\"" + "," + "\"" + "subtitle\":" + "\"" + Subtitle.Text + "\"" + "," + "\"" + "largeimagename\":" + "\"" + LIN.Text + "\"" + "," + "\"" + "largeimagetext\":" + "\"" + LIT.Text + "\"" + "," + "\"" + "smallimagename\":" + "\"" + SIN.Text + "\"" + "," + "\"" + "smallimagetext\":" + "\"" + SIT.Text + "\"" + " " + "}");
-                    RefreshRPC();
-                }
-            }
+                I64ApplicationID = Convert.ToInt64(ClientIDTextBox.Text),
+                StrTitle = TitleTextBox.Text,
+                StrSubtitle = SubtitleTextBox.Text,
+                StrLargeImageName = LargeImageNameTextBox.Text,
+                StrLargeImageText = LargeImageHoverTextBox.Text,
+                StrSmallImageName = SmallImageNameTextBox.Text,
+                StrSmallImageText = SmallImageHoverTextBox.Text,
+                BUseTimer = (bool)TimerCheckBox.IsChecked
+            };
+            File.WriteAllText(clientpref, JsonConvert.SerializeObject(UD));
+        }
+        private void DeserializeApplicationPreferences()
+        {
+            PSUIUserData prefs = JsonConvert.DeserializeObject<PSUIUserData>(File.ReadAllText(clientpref));
+            ClientIDTextBox.Text = prefs.I64ApplicationID.ToString();
+            TitleTextBox.Text = prefs.StrTitle;
+            SubtitleTextBox.Text = prefs.StrSubtitle;
+            LargeImageNameTextBox.Text = prefs.StrLargeImageName;
+            LargeImageHoverTextBox.Text = prefs.StrLargeImageText;
+            SmallImageNameTextBox.Text = prefs.StrSmallImageName;
+            SmallImageHoverTextBox.Text = prefs.StrSmallImageText;
+            TimerCheckBox.IsChecked = prefs.BUseTimer;
         }
         private void Minimize (object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
         public static DiscordRpcClient client;
-        private bool cidtrue;
 
-        private static void Initialize()
+        private void Initialize()
         {
-            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\clientpreferences.json";
             try
             {
-                string DATA = File.ReadAllText(clientpref);
-                LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
-                client = new DiscordRpcClient(json.cid);
+                client = new DiscordRpcClient(ClientIDTextBox.Text);
                 client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+                if (client.IsInitialized)
+                {
+                    client.Dispose();
+                }
                 client.OnReady += (sender, e) =>
                 {
                     Console.WriteLine("Received Ready from user {0}", e.User.Username);
@@ -114,27 +117,46 @@ namespace PresenceSharpUI
                 client.OnPresenceUpdate += (sender, e) =>
                 {
                     Console.WriteLine("Received Update! {0}", e.Presence);
+                    Application.Current.Dispatcher.Invoke(RPCSuccess, System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    BPresenceConnected = true;
+                };
+                client.OnConnectionFailed += (sender, e) =>
+                {
+                    Console.WriteLine("Received Error! {0}", e.FailedPipe);
+                    Application.Current.Dispatcher.Invoke(RPCFailure, System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    BPresenceConnected = false;
                 };
                 client.Initialize();
                 client.SetPresence(new RichPresence()
                 {
-                    Details = json.title,
-                    State = json.subtitle,
+                    Details = TitleTextBox.Text,
+                    State = SubtitleTextBox.Text,
                     Assets = new Assets()
                     {
-                        LargeImageKey = json.largeimagename,
-                        LargeImageText = json.largeimagetext,
-                        SmallImageKey = json.smallimagename,
-                        SmallImageText = json.smallimagetext
+                        LargeImageKey = LargeImageNameTextBox.Text,
+                        LargeImageText = LargeImageHoverTextBox.Text,
+                        SmallImageKey = SmallImageNameTextBox.Text,
+                        SmallImageText = SmallImageHoverTextBox.Text
                     }
                 });
-                new ToastContentBuilder()
-                    .AddArgument("action", "viewConversation")
-                    .AddArgument("conversationId", 9813)
-                    .AddText("Rich presence initialized!")
-                    .AddText("Note: If you don't see your rich presence, you may be getting rate limited by Discord. Give it a few minutes and try again.")
-                    .SetToastDuration(ToastDuration.Long)
-                    .Show();
+                if ((bool)TimerCheckBox.IsChecked)
+                {
+                    client.UpdateStartTime();
+                }
+                switch (SmallImageNameTextBox.Text.Length)
+                {
+                    case 0:
+                        SmallImageBackdropEllipse.Visibility = Visibility.Hidden;
+                        SmallImageEllipse.Visibility = Visibility.Hidden;
+                        break;
+                    default:
+                        SmallImageBackdropEllipse.Visibility = Visibility.Visible;
+                        SmallImageEllipse.Visibility = Visibility.Visible;
+                        break;
+                }
+                UserActivityName.Content = "Cool Application Name";
+                UserActivityText.Text = TitleTextBox.Text;
+                UserActivityStatus.Text = TitleTextBox.Text;
             }
             catch (Exception ex)
             {
@@ -142,51 +164,75 @@ namespace PresenceSharpUI
             }
 
         }
-        private static void RefreshRPC()
+
+        public class PSUIUserData
         {
-            string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PresenceSharp\\UI\\clientpreferences.json";
-            string DATA = File.ReadAllText(clientpref);
-            LauncherCloud json = JsonConvert.DeserializeObject<LauncherCloud>(DATA);
-            client.SetPresence(new RichPresence()
-            {
-                Details = json.title,
-                State = json.subtitle,
-                Assets = new Assets()
-                {
-                    LargeImageKey = json.largeimagename,
-                    LargeImageText = json.largeimagetext,
-                    SmallImageKey = json.smallimagename,
-                    SmallImageText = json.smallimagetext
-                }
-            });
-            MessageBox.Show("RPC updated!", "", MessageBoxButton.OK, MessageBoxImage.Information);
+            public long I64ApplicationID { get; set; }
+            public string StrTitle { get; set; }
+            public string StrSubtitle { get; set; }
+            public string StrLargeImageName { get; set; }
+            public string StrLargeImageText { get; set; }
+            public string StrSmallImageName { get; set; }
+            public string StrSmallImageText { get; set; }
+            public bool BUseTimer { get; set; }
         }
 
-        public class LauncherCloud
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            public string title { get; set; }
-            public string subtitle { get; set; }
-            public string cid { get; set; }
-            public string largeimagename { get; set; }
-            public string largeimagetext { get; set; }
-            public string smallimagename { get; set; }
-            public string smallimagetext { get; set; }
+            this.Close();
         }
-        //making sure timers dont fuck up was much easier than i thought it would have been ,,
-        public bool bHasTimer;
 
-        private void ClientCallUpdateStartTime(object sender, RoutedEventArgs e)
+        private void ClientIDTextBox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (bHasTimer == true)
+            if (e.KeyData != Keys.Back)
+                e.SuppressKeyPress = !int.TryParse(Convert.ToString((char)e.KeyData), out int _);
+        }
+
+        private void ClientIDTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
+        private static bool IsTextAllowed(string text)
+        {
+            return !_regex.IsMatch(text);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Initialize();
+            SerializeApplicationPreferences();
+        }
+        private void RPCSuccess() 
+        {
+            UsernameTextBlock.Text = client.CurrentUser.Username;
+            BitmapImage bmp = new();
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(client.CurrentUser.GetAvatarURL(User.AvatarFormat.PNG, User.AvatarSize.x256));
+            bmp.EndInit();
+            UserProfilePictureImageSource.ImageSource = bmp;
+            UserOnlineAppearance.StrokeThickness = 15;
+            UserOnlineAppearance.Stroke = Brushes.Green;
+            ServiceStatusEllipse.Fill = Brushes.Green;
+        }
+        private void RPCFailure()
+        {
+            BitmapImage bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.UriSource = new Uri("https://cdn.discordapp.com/embed/avatars/0.png");
+            bmp.EndInit();
+            UserProfilePictureImageSource.ImageSource = bmp;
+            ServiceStatusEllipse.Fill = Brushes.Red;
+        }
+
+        private void DragBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                client.UpdateClearTime();
-                bHasTimer = false;
-            }
-            else if (bHasTimer == false)
-            {
-                client.UpdateStartTime();
-                bHasTimer = true;
+                this.DragMove();
             }
         }
+        private bool BPresenceConnected = false;
     }
 }
