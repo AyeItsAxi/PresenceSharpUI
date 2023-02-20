@@ -206,7 +206,8 @@ namespace PresenceSharpUI
         }
         private void RPCSuccess() 
         {
-            UsernameTextBlock.Text = client.CurrentUser.Username;
+            UserName.Text = client.CurrentUser.Username;
+            UserDiscriminator.Text = "#" + client.CurrentUser.Discriminator.ToString("0000");
             BitmapImage bmp = new();
             bmp.BeginInit();
             bmp.UriSource = new Uri(client.CurrentUser.GetAvatarURL(User.AvatarFormat.PNG, User.AvatarSize.x256));
