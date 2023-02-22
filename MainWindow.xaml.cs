@@ -1,20 +1,17 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using DiscordRPC;
 using System.Windows;
 using Newtonsoft.Json;
 using DiscordRPC.Logging;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Forms;
-using MessageBox = System.Windows.MessageBox;
-using System.Text.RegularExpressions;
-using System.Windows.Media.Imaging;
-using Application = System.Windows.Application;
-using DiscordRPC.Events;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
+using MessageBox = System.Windows.MessageBox;
+using Application = System.Windows.Application;
 
 namespace PresenceSharpUI
 {
