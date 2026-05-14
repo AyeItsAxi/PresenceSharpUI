@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using DiscordRPC.Logging;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
@@ -15,33 +14,32 @@ using Application = System.Windows.Application;
 
 namespace PresenceSharpUI
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private readonly string clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI\\UserPreferences.json";
+        private readonly string _clientpref = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\PresenceSharp\UI\UserPreferences.json";
         public MainWindow()
         {
             InitializeComponent();
-            string root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\PresenceSharp\\UI";
+            var root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\PresenceSharp\UI";
             if (!Directory.Exists(root))
             {
                 Directory.CreateDirectory(root);
             }
-            if (!File.Exists(clientpref))
+            if (!File.Exists(_clientpref))
             {
-                PSUIUserData UDDefault = new()
+                PsuiUserData udDefault = new()
                 {
-                    I64ApplicationID = 1061800604051189830,
+                    I64ApplicationId = 1061800604051189830,
                     StrTitle = "This is an example title",
                     StrSubtitle = "This is an example subtitle",
                     StrLargeImageName = "appicon",
                     StrLargeImageText = "Example text",
                     StrSmallImageName = "appicon",
-                    StrSmallImageText = "Example text",
-                    BUseTimer = false
+                    StrSmallImageText = "Example text"
                 };
-                File.WriteAllText(clientpref, JsonConvert.SerializeObject(UDDefault));
+                File.WriteAllText(_clientpref, JsonConvert.SerializeObject(udDefault));
             }
-            if (File.Exists(clientpref))
+            if (File.Exists(_clientpref))
             {
                 DeserializeApplicationPreferences();
             }
@@ -50,39 +48,42 @@ namespace PresenceSharpUI
         }
         private async void EnsurePresenceConnection()
         {
-            await Task.Delay(20000);
-            for (int i = 0; i < 50; i++)
+            try
             {
-                if (BPresenceConnected == true)
+                await Task.Delay(20000);
+                for (var i = 0; i < 50; i++)
                 {
-                    break;
-                }
-                if (BPresenceConnected == false)
-                {
+                    // Are we already connected? Break the loop if we are.
+                    if (_bPresenceConnected) break;
+                    
+                    // Try again if not
                     Initialize();
                     await Task.Delay(30000);
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
         private void SerializeApplicationPreferences()
         {
-            PSUIUserData UD = new()
+            PsuiUserData userData = new()
             {
-                I64ApplicationID = Convert.ToInt64(ClientIDTextBox.Text),
+                I64ApplicationId = Convert.ToInt64(ClientIDTextBox.Text),
                 StrTitle = TitleTextBox.Text,
                 StrSubtitle = SubtitleTextBox.Text,
                 StrLargeImageName = LargeImageNameTextBox.Text,
                 StrLargeImageText = LargeImageHoverTextBox.Text,
                 StrSmallImageName = SmallImageNameTextBox.Text,
-                StrSmallImageText = SmallImageHoverTextBox.Text,
-                BUseTimer = false
+                StrSmallImageText = SmallImageHoverTextBox.Text
             };
-            File.WriteAllText(clientpref, JsonConvert.SerializeObject(UD));
+            File.WriteAllText(_clientpref, JsonConvert.SerializeObject(userData));
         }
         private void DeserializeApplicationPreferences()
         {
-            PSUIUserData prefs = JsonConvert.DeserializeObject<PSUIUserData>(File.ReadAllText(clientpref));
-            ClientIDTextBox.Text = prefs.I64ApplicationID.ToString();
+            PsuiUserData prefs = JsonConvert.DeserializeObject<PsuiUserData>(File.ReadAllText(_clientpref));
+            ClientIDTextBox.Text = prefs.I64ApplicationId.ToString();
             TitleTextBox.Text = prefs.StrTitle;
             SubtitleTextBox.Text = prefs.StrSubtitle;
             LargeImageNameTextBox.Text = prefs.StrLargeImageName;
@@ -94,36 +95,36 @@ namespace PresenceSharpUI
         {
             this.WindowState = WindowState.Minimized;
         }
-        public static DiscordRpcClient client;
+        private static DiscordRpcClient _client;
 
         private void Initialize()
         {
             try
             {
-                client = new DiscordRpcClient(ClientIDTextBox.Text);
-                client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
-                if (client.IsInitialized)
+                _client = new DiscordRpcClient(ClientIDTextBox.Text);
+                _client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+                if (_client.IsInitialized)
                 {
-                    client.Dispose();
+                    _client.Dispose();
                 }
-                client.OnReady += (sender, e) =>
+                _client.OnReady += (_, e) =>
                 {
                     Console.WriteLine("Received Ready from user {0}", e.User.Username);
                 };
-                client.OnPresenceUpdate += (sender, e) =>
+                _client.OnPresenceUpdate += (_, e) =>
                 {
                     Console.WriteLine("Received Update! {0}", e.Presence);
-                    Application.Current.Dispatcher.Invoke(RPCSuccess, System.Windows.Threading.DispatcherPriority.ContextIdle);
-                    BPresenceConnected = true;
+                    Application.Current.Dispatcher.Invoke(RpcSuccess, System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    _bPresenceConnected = true;
                 };
-                client.OnConnectionFailed += (sender, e) =>
+                _client.OnConnectionFailed += (_, e) =>
                 {
                     Console.WriteLine("Received Error! {0}", e.FailedPipe);
-                    Application.Current.Dispatcher.Invoke(RPCFailure, System.Windows.Threading.DispatcherPriority.ContextIdle);
-                    BPresenceConnected = false;
+                    Application.Current.Dispatcher.Invoke(RpcFailure, System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    _bPresenceConnected = false;
                 };
-                client.Initialize();
-                client.SetPresence(new RichPresence()
+                _client.Initialize();
+                _client.SetPresence(new RichPresence()
                 {
                     Details = TitleTextBox.Text,
                     State = SubtitleTextBox.Text,
@@ -157,22 +158,21 @@ namespace PresenceSharpUI
 
         }
 
-        public class PSUIUserData
+        public class PsuiUserData
         {
-            public long I64ApplicationID { get; set; }
-            public string StrTitle { get; set; }
-            public string StrSubtitle { get; set; }
-            public string StrLargeImageName { get; set; }
-            public string StrLargeImageText { get; set; }
-            public string StrSmallImageName { get; set; }
-            public string StrSmallImageText { get; set; }
-            public bool BUseTimer { get; set; }
+            public long I64ApplicationId { get; init; }
+            public string StrTitle { get; init; }
+            public string StrSubtitle { get; init; }
+            public string StrLargeImageName { get; init; }
+            public string StrLargeImageText { get; init; }
+            public string StrSmallImageName { get; init; }
+            public string StrSmallImageText { get; init; }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            client.Deinitialize();
-            client.Dispose();
+            _client.Deinitialize();
+            _client.Dispose();
             Close();
         }
 
@@ -181,10 +181,10 @@ namespace PresenceSharpUI
             e.Handled = !IsTextAllowed(e.Text);
         }
 
-        private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
+        private static readonly Regex Regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
         private static bool IsTextAllowed(string text)
         {
-            return !_regex.IsMatch(text);
+            return !Regex.IsMatch(text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -192,19 +192,19 @@ namespace PresenceSharpUI
             Initialize();
             SerializeApplicationPreferences();
         }
-        private void RPCSuccess() 
+        private void RpcSuccess() 
         {
-            UserName.Text = client.CurrentUser.Username;
+            UserName.Text = _client.CurrentUser.Username;
             BitmapImage bmp = new();
             bmp.BeginInit();
-            bmp.UriSource = new Uri(client.CurrentUser.GetAvatarURL(User.AvatarFormat.PNG, User.AvatarSize.x256));
+            bmp.UriSource = new Uri(_client.CurrentUser.GetAvatarURL(User.AvatarFormat.PNG, User.AvatarSize.x256));
             bmp.EndInit();
             UserProfilePictureImageSource.ImageSource = bmp;
             UserOnlineAppearance.StrokeThickness = 15;
             UserOnlineAppearance.Stroke = Brushes.Green;
             ServiceStatusEllipse.Fill = Brushes.Green;
         }
-        private void RPCFailure()
+        private void RpcFailure()
         {
             BitmapImage bmp = new BitmapImage();
             bmp.BeginInit();
@@ -218,9 +218,9 @@ namespace PresenceSharpUI
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                this.DragMove();
+                DragMove();
             }
         }
-        private bool BPresenceConnected = false;
+        private bool _bPresenceConnected;
     }
 }
