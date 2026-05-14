@@ -75,7 +75,7 @@ namespace PresenceSharpUI
                 StrLargeImageText = LargeImageHoverTextBox.Text,
                 StrSmallImageName = SmallImageNameTextBox.Text,
                 StrSmallImageText = SmallImageHoverTextBox.Text,
-                BUseTimer = (bool)TimerCheckBox.IsChecked
+                BUseTimer = false
             };
             File.WriteAllText(clientpref, JsonConvert.SerializeObject(UD));
         }
@@ -89,7 +89,6 @@ namespace PresenceSharpUI
             LargeImageHoverTextBox.Text = prefs.StrLargeImageText;
             SmallImageNameTextBox.Text = prefs.StrSmallImageName;
             SmallImageHoverTextBox.Text = prefs.StrSmallImageText;
-            TimerCheckBox.IsChecked = prefs.BUseTimer;
         }
         private void Minimize (object sender, RoutedEventArgs e)
         {
@@ -136,10 +135,6 @@ namespace PresenceSharpUI
                         SmallImageText = SmallImageHoverTextBox.Text
                     }
                 });
-                if ((bool)TimerCheckBox.IsChecked)
-                {
-                    client.UpdateStartTime();
-                }
                 switch (SmallImageNameTextBox.Text.Length)
                 {
                     case 0:
@@ -157,7 +152,7 @@ namespace PresenceSharpUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("There was a fatal error starting the RPC: " + ex.ToString());
+                MessageBox.Show("There was a fatal error starting the RPC: " + ex);
             }
 
         }
@@ -176,13 +171,9 @@ namespace PresenceSharpUI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-
-        private void ClientIDTextBox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            if (e.KeyData != Keys.Back)
-                e.SuppressKeyPress = !int.TryParse(Convert.ToString((char)e.KeyData), out int _);
+            client.Deinitialize();
+            client.Dispose();
+            Close();
         }
 
         private void ClientIDTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -204,7 +195,6 @@ namespace PresenceSharpUI
         private void RPCSuccess() 
         {
             UserName.Text = client.CurrentUser.Username;
-            UserDiscriminator.Text = "#" + client.CurrentUser.Discriminator.ToString("0000");
             BitmapImage bmp = new();
             bmp.BeginInit();
             bmp.UriSource = new Uri(client.CurrentUser.GetAvatarURL(User.AvatarFormat.PNG, User.AvatarSize.x256));
