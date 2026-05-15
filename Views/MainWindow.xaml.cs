@@ -223,8 +223,11 @@ namespace PresenceSharpUI.Views
         private void CloseWindow(object sender, RoutedEventArgs e) =>
             Close();
 
-        private void DragBar_MouseDown(object sender, MouseButtonEventArgs e) =>
-            DragMove();
+        private void DragBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
+        }
 
         protected override void OnClosed(EventArgs e)
         {
