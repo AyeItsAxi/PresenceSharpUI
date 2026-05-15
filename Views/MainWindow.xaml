@@ -1,4 +1,4 @@
-﻿<Window x:Class="PresenceSharpUI.MainWindow"
+﻿<Window x:Class="PresenceSharpUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -47,7 +47,7 @@
         <Label x:Name="ProfilePreviewLabel" Foreground="#ffffff" FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="42" Content="Profile Preview" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="60" Margin="24,20,0,0" VerticalAlignment="Top" Width="306"/>
         <Label x:Name="CopyrightLabel" Foreground="#FF2E2F31" FontFamily="Lib/Fonts/Normal/#gg sans" FontSize="14" Content="Copyright (©️) 2022-2026 dotaxone" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="34" Margin="24,672,0,0" VerticalAlignment="Top" Width="306"/>
         <Label x:Name="PreviewDisclaimer" Foreground="#FF414348" FontFamily="Lib/Fonts/Normal/#gg sans" FontSize="12" FontStyle="Italic" Content="Not an actual preview. Timer does not sync." HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="34" Margin="24,643,0,0" VerticalAlignment="Top" Width="306"/>
-        <Button Content="+" FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="32" HorizontalAlignment="Left" Margin="1350,10,0,0" VerticalAlignment="Top" Width="40" Background="#FF131313" BorderBrush="#FF8A8A8A" Foreground="White" Click="Button_Click" Height="40">
+        <Button Content="+" FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="32" HorizontalAlignment="Left" Margin="1350,10,0,0" VerticalAlignment="Top" Width="40" Background="#FF131313" BorderBrush="#FF8A8A8A" Foreground="White" Click="CloseWindow" Height="40">
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="0"/>
@@ -157,7 +157,7 @@
         <TextBox x:Name="SmallImageNameTextBox" MaxLength="20" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Lib/Fonts/Normal/#gg sans" FontSize="28" Height="45" Margin="909,424,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="320" Background="{x:Null}" Foreground="White" SelectionBrush="#FF8C8C8C"/>
         <Label x:Name="SmallImageHoverLabel" Foreground="#ffffff" FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="42" Content="Small Image Hover Text" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="64" Margin="833,474,0,0" VerticalAlignment="Top" Width="472"/>
         <TextBox x:Name="SmallImageHoverTextBox" MaxLength="20" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Lib/Fonts/Normal/#gg sans" FontSize="28" Height="102" Margin="909,539,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="320" Background="{x:Null}" Foreground="White" SelectionBrush="#FF8C8C8C"/>
-        <Button FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="32" HorizontalAlignment="Left" Margin="654,40,0,0" VerticalAlignment="Top" Width="40" Background="#FF131313" BorderBrush="#FF8A8A8A" Foreground="White" Click="Button_Click_1" Height="40">
+        <Button FontFamily="Lib/Fonts/Extrabold/#gg sans" FontSize="32" HorizontalAlignment="Left" Margin="654,40,0,0" VerticalAlignment="Top" Width="40" Background="#FF131313" BorderBrush="#FF8A8A8A" Foreground="White" Click="RefreshPresence" Height="40">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="0"/>
