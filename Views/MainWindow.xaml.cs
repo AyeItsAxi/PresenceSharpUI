@@ -4,10 +4,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using PresenceSharpUI.Models;
 using PresenceSharpUI.Helpers;
 using PresenceSharpUI.Services;
+using System.Windows.Media.Imaging;
 using MessageBox = System.Windows.MessageBox;
 
 namespace PresenceSharpUI.Views
@@ -21,6 +21,7 @@ namespace PresenceSharpUI.Views
 
         private string _lastAvatarUrl;
         private bool _bPresenceConnected;
+        private readonly bool _isFullyLoaded;
 
         private static BitmapImage _defaultAvatarImage;
 
@@ -33,6 +34,8 @@ namespace PresenceSharpUI.Views
 
             RegisterPresenceEvents();
             LoadPreferences();
+            
+            _isFullyLoaded = true;
 
             InitializePresence();
             _ = EnsurePresenceConnectionAsync();
@@ -60,7 +63,9 @@ namespace PresenceSharpUI.Views
             try
             {
                 _presenceService.Initialize(ClientIDTextBox.Text);
-                _presenceService.SetPresence(CreatePresence());
+
+                var includeAssets = _isFullyLoaded;
+                _presenceService.SetPresence(CreatePresence(includeAssets));
 
                 UpdateSmallImageVisibility();
                 UpdateActivityPreview();
@@ -100,19 +105,30 @@ namespace PresenceSharpUI.Views
             });
         }
 
-        private RichPresence CreatePresence()
+        private RichPresence CreatePresence(bool includeAssets)
         {
             return new RichPresence
             {
                 Details = TitleTextBox.Text,
                 State = SubtitleTextBox.Text,
-                Assets = new Assets
-                {
-                    LargeImageKey = LargeImageNameTextBox.Text,
-                    LargeImageText = LargeImageHoverTextBox.Text,
-                    SmallImageKey = SmallImageNameTextBox.Text,
-                    SmallImageText = SmallImageHoverTextBox.Text
-                }
+                Assets = includeAssets ? CreateAssets() : null
+            };
+        }
+        
+        private Assets CreateAssets()
+        {
+            var hasLargeImage = !string.IsNullOrWhiteSpace(LargeImageNameTextBox.Text);
+            var hasSmallImage = !string.IsNullOrWhiteSpace(SmallImageNameTextBox.Text);
+
+            if (!hasLargeImage || !hasSmallImage)
+                return null;
+
+            return new Assets
+            {
+                LargeImageKey = LargeImageNameTextBox.Text,
+                LargeImageText = LargeImageHoverTextBox.Text,
+                SmallImageKey = SmallImageNameTextBox.Text,
+                SmallImageText = SmallImageHoverTextBox.Text
             };
         }
 
@@ -180,6 +196,7 @@ namespace PresenceSharpUI.Views
 
         private void RpcFailure()
         {
+            _lastAvatarUrl = null;
             UserProfilePictureImageSource.ImageSource = DefaultAvatarImage;
             SetOnlineStatus(Brushes.Red);
         }

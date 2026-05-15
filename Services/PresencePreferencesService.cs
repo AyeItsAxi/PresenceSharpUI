@@ -26,8 +26,10 @@ public static class PresencePreferencesService
 
     public static PsuiUserData Load()
     {
-        return JsonConvert.DeserializeObject<PsuiUserData>(
+        var data = JsonConvert.DeserializeObject<PsuiUserData>(
             File.ReadAllText(PreferencesPath))!;
+
+        return Sanitize(data);
     }
 
     public static void Save(PsuiUserData userData)
@@ -48,6 +50,20 @@ public static class PresencePreferencesService
             StrLargeImageText = "Example text",
             StrSmallImageName = "appicon",
             StrSmallImageText = "Example text"
+        };
+    }
+    
+    private static PsuiUserData Sanitize(PsuiUserData data)
+    {
+        return new PsuiUserData
+        {
+            I64ApplicationId = data.I64ApplicationId,
+            StrTitle = data.StrTitle ?? string.Empty,
+            StrSubtitle = data.StrSubtitle ?? string.Empty,
+            StrLargeImageName = data.StrLargeImageName ?? string.Empty,
+            StrLargeImageText = data.StrLargeImageText ?? string.Empty,
+            StrSmallImageName = data.StrSmallImageName ?? string.Empty,
+            StrSmallImageText = data.StrSmallImageText ?? string.Empty
         };
     }
 }
